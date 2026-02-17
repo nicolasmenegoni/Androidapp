@@ -5,6 +5,15 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Tag da release (ex: v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+      release_name:
+        description: 'Nome da release'
+        required: true
+        default: 'Action Tracker Release'
 
 permissions:
   contents: write
@@ -28,7 +37,7 @@ jobs:
         with:
           gradle-version: '8.2.1'
 
-      - name: Build release APK (without wrapper)
+      - name: Build release APK
         run: gradle assembleRelease
 
       - name: Upload APK artifact
@@ -38,7 +47,10 @@ jobs:
           path: app/build/outputs/apk/release/app-release-unsigned.apk
 
       - name: Publish APK in GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release_tag || github.ref_name }}
+          name: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release_name || github.ref_name }}
+          generate_release_notes: true
+          target_commitish: ${{ github.sha }}
           files: app/build/outputs/apk/release/app-release-unsigned.apk

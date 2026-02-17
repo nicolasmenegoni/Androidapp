@@ -15,12 +15,18 @@ App Android simples para registrar ações e acompanhar andamento.
 ## Publicar APK no GitHub
 Este repositório possui workflow em `.github/workflows/android-apk.yml` (sem depender de arquivos binários versionados no repositório).
 
-- **Manual:** na aba **Actions**, execute o workflow **Build and Publish APK**.
-  - O APK será anexado como artifact do workflow.
-- **Automático em release:** ao criar/push de uma tag `v*` (ex: `v1.0.0`):
-  - O workflow compila `assembleRelease` usando Gradle instalado no runner (não usa `gradle-wrapper.jar`).
-  - Faz upload do `app-release-unsigned.apk` como artifact.
-  - Publica o APK nos assets da Release no GitHub.
+### Opção 1: criar Release manualmente (recomendado)
+1. Vá em **Actions** > **Build and Publish APK**.
+2. Clique em **Run workflow**.
+3. Preencha:
+   - `release_tag` (ex: `v1.0.0`)
+   - `release_name` (ex: `Action Tracker v1.0.0`)
+4. Execute o workflow.
+5. Ao final, o `.apk` estará nos **assets** da Release criada no GitHub.
+
+### Opção 2: por tag git
+- Faça push de uma tag `v*` (ex: `v1.0.1`).
+- O workflow compila e publica automaticamente o APK na Release dessa tag.
 
 ## Estrutura principal
 - `MainActivity.kt`: tela principal com campo de input, botão de adicionar e lista com checkbox.
